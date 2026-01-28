@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Region latency</title>
+</head>
+<body>
+  <pre id="results">Measuring...</pre>
+  <script>
+    const EAST_URL = 'https://your-us-east-1-apprunner-url.awsapprunner.com';
+    const WEST_URL = 'https://your-us-west-2-apprunner-url.awsapprunner.com';
+
+    const endpoints = [
+      { region: 'us-east-1', url: EAST_URL },
+      { region: 'us-west-2', url: WEST_URL }
+    ];
+
+    async function ping(url) {
+      const target = url.replace(/\/$/, '') + '/api/hello';
+      const t0 = performance.now();
+      await fetch(target);
+      const t1 = performance.now();
+      return Math.round(t1 - t0);
+    }
+
+    async function run() {
+      const lines = [];
+      for (const { region, url } of endpoints) {
+        try {
+          const ms = await ping(url);
+          lines.push(region + ': ' + ms + ' ms');
+        } catch (e) {
+          lines.push(region + ': error');
+        }
+      }
+      document.getElementById('results').textContent = lines.join('\n');
+    }
+
+    run();
+  </script>
+</body>
+</html>
