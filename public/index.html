@@ -2,42 +2,19 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Region latency</title>
+  <title>Region</title>
 </head>
 <body>
-  <pre id="results">Measuring...</pre>
+  <pre id="results">...</pre>
   <script>
-    const EAST_URL = 'https://4znmf7vdki.us-east-1.awsapprunner.com';
-    const WEST_URL = 'https://ntjur29q8m.us-west-2.awsapprunner.com';
-
-    const endpoints = [
-      { region: 'us-east-1', url: EAST_URL },
-      { region: 'us-west-2', url: WEST_URL }
-    ];
-
-    async function ping(url) {
-      const target = url.replace(/\/$/, '') + '/api/hello';
-      const t0 = performance.now();
-      const res = await fetch(target);
-      const t1 = performance.now();
-      const text = await res.text();
-      return { ms: Math.round(t1 - t0), hello: text };
-    }
-
-    async function run() {
-      const lines = [];
-      for (const { region, url } of endpoints) {
-        try {
-          const { ms, hello } = await ping(url);
-          lines.push(region + ': ' + ms + ' ms — ' + hello);
-        } catch (e) {
-          lines.push(region + ': error');
-        }
-      }
-      document.getElementById('results').textContent = lines.join('\n');
-    }
-
-    run();
+    fetch('/api/hello')
+      .then(function (r) { return r.text(); })
+      .then(function (text) {
+        document.getElementById('results').textContent = text;
+      })
+      .catch(function () {
+        document.getElementById('results').textContent = 'error';
+      });
   </script>
 </body>
 </html>
