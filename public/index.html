@@ -18,17 +18,18 @@
     async function ping(url) {
       const target = url.replace(/\/$/, '') + '/api/hello';
       const t0 = performance.now();
-      await fetch(target);
+      const res = await fetch(target);
       const t1 = performance.now();
-      return Math.round(t1 - t0);
+      const text = await res.text();
+      return { ms: Math.round(t1 - t0), hello: text };
     }
 
     async function run() {
       const lines = [];
       for (const { region, url } of endpoints) {
         try {
-          const ms = await ping(url);
-          lines.push(region + ': ' + ms + ' ms');
+          const { ms, hello } = await ping(url);
+          lines.push(region + ': ' + ms + ' ms — ' + hello);
         } catch (e) {
           lines.push(region + ': error');
         }
