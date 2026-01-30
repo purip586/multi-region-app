@@ -1,0 +1,4 @@
+config:
+  aws:region: us-east-1
+  gcp:project: multi-cloud-dr-485812
+  gcp:region: us-central1
